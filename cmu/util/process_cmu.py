@@ -10,23 +10,14 @@ import json
 
 # Process the dictionary
 
-# We want to know two things about any word: the number of syllables and the
-# final strong syllable (so we can rhyme). The number of syllables is easy:
-# just count the number of digits in the word. Both of these process functions
-# will take a string of syllables from the CMU dict (e.g. "T R IH1 K IY0" for
-# "TRICKY").
 
 def num_syls(syls):
 	"""Returns the number of syllables in a CMU syllable string."""
 	return len([c for c in syls if c in ['0','1','2']])
 
 
-# Getting the rhyme syllable is a little more tricky. We want to get
-# the last strong syllable (the last phoneme with a 1 in it) and everything
-# after it.
-
-def last_syl(syls):
-	"""Returns the rhyme syllable from a CMU syllable string."""
+def last_syl_perfect(syls):
+	"""Returns a perfect rhyme syllable for a CMU syllable string"""
 	syl_list = syls.split(' ')
 	last_stress = len(syl_list) - 1
 	for i in range(len(syl_list)-1,-1,-1):
@@ -61,7 +52,7 @@ def main():
 			continue
 		word, syls = line.split('  ')
 		num = num_syls(syls)
-		last = last_syl(syls)
+		last = last_syl_perfect(syls)
 		if num not in d:
 			d[num] = {}
 		if last not in d[num]:
