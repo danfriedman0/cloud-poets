@@ -15,19 +15,25 @@ class CloudPoet0:
 		self.counts = counts
 		self.stanzas = stanzas
 
-	def get_random_word(self, num_syls):
+	def get_random_word(self, num_syls, rhymeable=False):
 		"""
 		Get a random word from the dictionary of length <= num_syls.
 		Return (word, num_syls_in_word, last_syl)
 		"""
 		lens = list(range(1, num_syls+1))
 		random.shuffle(lens)
+		rejected_words = []
 		for l in lens:
 			if str(l) in self.dict:
 				last_syl, words = random.choice(list(self.dict[str(l)].items()))
 				word = random.choice(words)
-				return (word, l, last_syl)
+				if len(words) > 1 or not rhymeable:
+					return (word, l, last_syl)
+				else:
+					rejected_words.append(word)
 		# If we didn't find a word something has gone wrong
+		if len(rejected_words):
+			return random.choice(rejected_words)
 		print("No word. Exiting.")
 		sys.exit(0)
 
@@ -113,18 +119,18 @@ class CloudPoet0:
 
 def main():
 	parser = argparse.ArgumentParser()
-	parser.add_argument("file_path", nargs="?",
-		help="Path to the dictionary relative to this file")
 	parser.add_argument("pattern", nargs="?", help="Rhyme pattern")
 	parser.add_argument("counts", nargs="*", help="Length of each lines")
 	parser.add_argument("stanzas", nargs="?", help="Number of stanzas")
+	parser.add_argument("file_path", nargs="?",
+		help="Path to the dictionary relative to this file")
 	args = parser.parse_args()
 
 	file_path = args.file_path if args.file_path else "dict/cmudict.json"
 	path = os.path.join(os.path.dirname(__file__), file_path)
 
 	pattern = args.pattern if args.pattern else "ABAB"
-	counts = args.counts if args.counts else [2,1,2,1]
+	counts = args.counts if args.counts else [4,3,4,3]
 	stanzas = args.stanzas if args.stanzas else 2
 
 	poet = CloudPoet0(path, pattern, counts, stanzas)
