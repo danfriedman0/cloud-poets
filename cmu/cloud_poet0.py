@@ -31,29 +31,33 @@ class CloudPoet0:
 		print("No word. Exiting.")
 		sys.exit(0)
 
-	def get_rhyming_word(self, num_syls, last_syl):
+	def get_rhyming_word(self, num_syls, last_syl, used):
 		"""
-		Get a word from the dictionary that ends with last_syl or a random
-		word if there is none. Return (word, num_syls_in_word, last_syl)
+		Get a word from the dictionary that ends with last_syl and is not
+		used. Get a random word if there is none.
+		Return (word, num_syls_in_word, last_syl)
 		"""
 		lens = list(range(1, num_syls+1))
 		random.shuffle(lens)
 		for l in lens:
 			if str(l) in self.dict and last_syl in self.dict[str(l)]:
-				return (random.choice(self.dict[str(l)][last_syl]), l, last_syl)
+				words = [word for word in self.dict[str(l)][last_syl] if word != used]
+				if len(words):
+					return (random.choice(words), l, last_syl)
 		return self.get_random_word(num_syls)
 
 
-	def generate_line(self, num_syls, last_syl=None):
+	def generate_line(self, num_syls, last_syl=None, used=None):
 		"""
 		Generate a line of poetry with num_syls syllables ending with last_syl
-		if specified. Return the line as a string and the last syllable
+		if specified. Return the line as a string, the last syllable, and the
+		last word.
 		"""
 		words = []
 		
 		# Start with the last word in the line
 		if last_syl:
-			last_word, l, last_syl = self.get_rhyming_word(num_syls, last_syl)
+			last_word, l, last_syl = self.get_rhyming_word(num_syls, last_syl, used)
 		else:
 			last_word, l, last_syl = self.get_random_word(min(3,num_syls))
 		num_syls -= l
@@ -66,7 +70,7 @@ class CloudPoet0:
 
 		words.reverse()
 		line = ' '.join(words)
-		return (line, last_syl)
+		return (line, last_syl, last_word)
 
 	def generate_stanza(self, pattern, counts):
 		"""
@@ -84,15 +88,19 @@ class CloudPoet0:
 		rhymeDict = {}
 		lines = []
 		for pat, count in zip(pattern, counts):
-			print(pat, count)
 			if pat not in rhymeDict:
-				line, last_syl = self.generate_line(count)
-				rhymeDict[pat] = last_syl
+				line, last_syl, last_word = self.generate_line(count)
+				rhymeDict[pat] = {
+					"last_syl": last_syl,
+					"last_word": last_word
+				}
 			else:
-				line, _ = self.generate_line(count, rhymeDict[pat])
+				line, _, last_word = self.generate_line(count,
+																								rhymeDict[pat]["last_syl"],
+																								rhymeDict[pat]["last_word"])
+				rhymeDict[pat]["last_word"] = last_word
 			lines.append(line)
 
-		lines.reverse()
 		return '\n'.join(lines)
 
 	def write_poem(self):
