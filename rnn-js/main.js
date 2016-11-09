@@ -6,13 +6,17 @@
 
 (function() {
 
-	var modelName = "rnn-js/models/Pope1.3055.json";
-	var sampler = RSampler(modelName, {temperature: 0.5});
-
-
 	var write = document.getElementById("write");
 	var clear = document.getElementById("clear");
 	var output = document.getElementById("output-text");
+
+	var modelName = "rnn-js/models/Pope1.3055.json";
+	var sampler = RSampler(modelName, {
+		temperature: 0.5,
+		onload: function() {
+			write.disabled = false;
+		}
+	});
 
 	var writeLine = function() {
 		var line = sampler.getLine();

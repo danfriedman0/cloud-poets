@@ -19,6 +19,7 @@ var RSampler = function(modelName, opts) {
 
 	this.temperature = opts && opts.temperature ? opts.temperature : 0.4;
 	this.samplei = opts && opts.samplei ? opts.samplei : true;
+	this.onload = opts && opts.onload ? opts.onload : null;
 
 	this.prev = {};
 
@@ -32,7 +33,6 @@ var RSampler = function(modelName, opts) {
 		xobj.open("GET", filename, true);
 		xobj.onreadystatechange = function() {
 			if (xobj.readyState == 4 && xobj.status == "200") {
-				console.log(xobj.responseText);
 				callback(xobj.responseText);
 			}
 		}
@@ -58,6 +58,7 @@ RSampler.prototype.loadModel = function(j) {
 	}
 	this.letterToIndex = j['letterToIndex'];
 	this.indexToLetter = j['indexToLetter'];
+	if (this.onload) { this.onload(); }
 };
 
 /* forwardIndex and predictSentence are from Karpathy */
@@ -71,8 +72,6 @@ RSampler.prototype.predictSentence = function(max_chars_gen) {
 		prev = this.prev,
 		samplei = this.samplei,
 		temperature = this.temperature;
-
-	console.log(model);
 
 	if (!max_chars_gen) max_chars_gen = this.max_chars_gen;
 
