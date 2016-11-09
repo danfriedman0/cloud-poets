@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<style>
+		body {
+			max-width: 50em;
+			margin: 0 auto;
+			font-family: monospace;
+		}
+		h1 {
+			text-align: center;
+		}
+		#output-wrapper {
+			text-align: center;
+		}
+		#output-window {
+			width: 500px;
+			min-height: 250px;
+			border: 1px solid rgba(0,0,0,0.1);
+			border-radius: 5px;
+			margin: 15px auto;
+			text-align: left;
+		}
+		#output-text {
+			margin: .2em;
+			white-space: pre-wrap;
+			word-wrap: break-word;
+		}
+		button {
+			font-family: monospace;
+		}
+	</style>
+	<title>rnn-js</title>
+</head>
+<body>
+<h1>rnn-js</h1>
+
+<div id="output-wrapper">
+	<div id="buttons">
+		<button id="write">write</button>
+		<button id="clear" disabled>clear</button>
+	</div>
+	<div id="output-window"><pre id="output-text"></pre></div>
+</div>
+
+<script src="rnn-js/lib/recurrentjs/vis.js"></script>
+<script src="rnn-js/lib/recurrentjs/recurrent.js"></script>
+<script src="rnn-js/rsampler.js"></script>
+<script src="rnn-js/main.js"></script>
+</body>
+</html>
