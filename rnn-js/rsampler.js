@@ -32,6 +32,7 @@ var RSampler = function(modelName, opts) {
 		xobj.open("GET", filename, true);
 		xobj.onreadystatechange = function() {
 			if (xobj.readyState == 4 && xobj.status == "200") {
+				console.log(xobj.responseText);
 				callback(xobj.responseText);
 			}
 		}
