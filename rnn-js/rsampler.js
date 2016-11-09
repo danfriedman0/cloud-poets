@@ -41,7 +41,6 @@ var RSampler = function(modelName, opts) {
 	// Load the model when the sampler is initialized
 	loadJson(modelName, function(response) {
 		this.loadModel(JSON.parse(response));
-		//loadModel(JSON.parse(response));
 	}.bind(this));
 };
 
@@ -71,6 +70,8 @@ RSampler.prototype.predictSentence = function(max_chars_gen) {
 		prev = this.prev,
 		samplei = this.samplei,
 		temperature = this.temperature;
+
+	console.log(model);
 
 	if (!max_chars_gen) max_chars_gen = this.max_chars_gen;
 
