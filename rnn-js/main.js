@@ -6,7 +6,7 @@
 
 (function() {
 
-	var modelName = "models/Pope1.3055.json";
+	var modelName = "rnn-js/models/Pope1.3055.json";
 	var sampler = RSampler(modelName, {temperature: 0.5});
 
 
