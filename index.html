@@ -17,6 +17,7 @@
 		}
 		#output-window {
 			width: 500px;
+			max-width: 90%;
 			min-height: 250px;
 			border: 1px solid rgba(0,0,0,0.1);
 			border-radius: 5px;
@@ -28,6 +29,15 @@
 			white-space: pre-wrap;
 			word-wrap: break-word;
 		}
+		#about {
+			display: none;
+			max-width: 90%;
+			margin: 0 auto;
+		}
+		#about-wrapper {
+			text-align: center;
+			margin-bottom: 20px;
+		}
 		button {
 			font-family: monospace;
 		}
@@ -36,6 +46,15 @@
 </head>
 <body>
 <h1>rnn-js</h1>
+
+<div id="about-wrapper">
+	<a id="about-link" class="open" href="#">about</a>
+</div>
+<div id="about">
+<p>This is a demo of an LSTM recurrent neural network that's been trained to write poetry like Alexander Pope. I used <a href="https://github.com/karpathy/char-rnn">Andrej Karpathy's char-rnn code</a> to train the model in Torch, I used <a href="https://github.com/Darktex/char-rnn">Davide Testuggine's fork of char-rnn</a> to convert my trained model to JSON and then I used <a href="https://github.com/karpathy/recurrentjs">Karpathy's recurrentjs library</a> to sample from the model in JavaScript.</p>
+
+<p>char-rnn is a pretty cool project. The model works by predicting one character at a time. For more you should look at Karpathy's repository and also his article, <a href="http://karpathy.github.io/2015/05/21/rnn-effectiveness/">"The Unreasonable Effectiveness of Recurrent Neural Networks,"</a> which has more examples. My purpose here was to wrap some of these other libraries to make it even simpler to train a model using Karpathy's Torch code on a GPU and then use JavaScript to sample from it in the browser. I have more RNN poets in the works.</p>
+</div>
 
 <div id="output-wrapper">
 	<div id="buttons">

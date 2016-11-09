@@ -9,6 +9,8 @@
 	var write = document.getElementById("write");
 	var clear = document.getElementById("clear");
 	var output = document.getElementById("output-text");
+	var aboutLink = document.getElementById("about-link");
+	var about = document.getElementById("about");
 
 	var modelName = "rnn-js/models/Pope1.3055.json";
 	var sampler = RSampler(modelName, {
@@ -42,6 +44,18 @@
 	clear.addEventListener("click", function() {
 		output.innerHTML = "";
 		clear.disabled = true;
+	});
+
+	aboutLink.addEventListener("click", function() {
+		if (this.className === "closed") {
+			this.className = "open";
+			about.style.display = "block";
+			this.innerHTML = "close";
+		} else {
+			this.className = "closed";
+			about.style.display = "none";
+			this.innerHTML = "about";
+		}
 	});
 
 
