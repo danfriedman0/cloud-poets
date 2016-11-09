@@ -10,7 +10,6 @@ class CloudPoet0:
 	def __init__(self, filename, pattern, counts, stanzas):
 		f_in = open(filename).read()
 		self.dict = json.loads(f_in)
-		#print(str(1) in self.dict)
 		self.pattern = pattern
 		self.counts = counts
 		self.stanzas = stanzas
@@ -32,8 +31,8 @@ class CloudPoet0:
 				else:
 					rejected_words.append(word)
 		# If we didn't find a word something has gone wrong
-		if len(rejected_words):
-			return random.choice(rejected_words)
+		if rhymeable:
+			return self.get_random_word(num_syls)
 		print("No word. Exiting.")
 		sys.exit(0)
 
@@ -65,7 +64,7 @@ class CloudPoet0:
 		if last_syl:
 			last_word, l, last_syl = self.get_rhyming_word(num_syls, last_syl, used)
 		else:
-			last_word, l, last_syl = self.get_random_word(min(3,num_syls))
+			last_word, l, last_syl = self.get_random_word(min(3,num_syls), True)
 		num_syls -= l
 		words.append(last_word)
 

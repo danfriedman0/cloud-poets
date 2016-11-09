@@ -7,7 +7,8 @@ import argparse
 
 # get a filename from the command line
 parser = argparse.ArgumentParser()
-parser.add_argument('filename', help='Add the name of a file in text directory')
+parser.add_argument('filename',
+  help='Add the name of a file in text directory')
 args = parser.parse_args()
 
 
@@ -22,7 +23,7 @@ ix_to_char = { i:ch for i,ch in enumerate(chars) }
 
 # hyperparameters
 hidden_size = 100 # size of hidden layer of neurons
-seq_length = 25 # number of steps to unroll the RNN for
+seq_length = 255 # number of steps to unroll the RNN for
 learning_rate = 1e-1
 
 # model paramters
@@ -97,16 +98,22 @@ n, p = 0, 0
 mWxh, mWhh, mWhy = np.zeros_like(Wxh), np.zeros_like(Whh), np.zeros_like(Why)
 mbh, mby = np.zeros_like(bh), np.zeros_like(by) # memory variables for Adagrad
 smooth_loss = -np.log(1.0/vocab_size)*seq_length # loss at iteration 0
+
+epoch = 0
 while True:
   # prepare inputs (sweeping from left to right in steps seq_length long)
   if p+seq_length+1 >= len(data) or n == 0:
     hprev = np.zeros((hidden_size,1)) # reset RNN memory
     p = 0 # go from start of data
+    epoch += 1
+    print("----------------------------------------")
+    print("                EPOCH:", epoch)
+    print("----------------------------------------")
   inputs = [char_to_ix[ch] for ch in data[p:p+seq_length]]
   targets = [char_to_ix[ch] for ch in data[p+1:p+seq_length+1]]
 
-  # sample fro mthe model now and then
-  if n % 1000 == 0:
+  # sample from the model now and then
+  if n % 100 == 0:
     sample_ix = sample(hprev, inputs[0], 200)
     txt = ''.join(ix_to_char[ix] for ix in sample_ix)
     print('----\n{}\n----'.format(txt))
@@ -114,7 +121,7 @@ while True:
   # forward seq_length characters through the net and fetch gradient
   loss, dWxh, dWhh, dWhy, dbh, dby, hprev = lossFun(inputs, targets, hprev)
   smooth_loss = smooth_loss * 0.999 + loss * 0.001
-  if n % 1000 == 0: print('iter {}, loss: {}'.format(n, smooth_loss))
+  if n % 100 == 0: print('iter {}, loss: {}'.format(n, smooth_loss))
 
   # perform parameter update with Adagrad
   for param, dparam, mem in zip([Wxh, Whh, Why, bh, by],
@@ -122,6 +129,14 @@ while True:
                                 [mWxh, mWhh, mWhy, mbh, mby]):
     mem += dparam * dparam
     param += -learning_rate * dparam / np.sqrt(mem + 1e-8) # adagrad update
+
+  # occasionaly save the weights
+  if n > 0 and n % 10000 == 0:
+    out_path = "weights/iter-{0}-loss-{1:.2f}".format(int(n/10000),
+      smooth_loss)
+    outfile = open(out_path, 'wb')
+    np.savez(outfile, Wxh=Wxh, Whh=Whh, bh=bh, by=by, h=hprev, ix=inputs[0])
+    outfile.close()
 
   p += seq_length # move data pointer
   n += 1 # iteration counter
